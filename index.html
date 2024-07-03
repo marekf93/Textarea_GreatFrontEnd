@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Meta tags for character encoding and viewport -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hero Section | GreatFrontEnd Projects</title>
+
+    <!-- Google Fonts links -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+       <!-- Inline styles for the page -->
+    <style>
+      /* Styles for the main card container */
+      .main_card {
+        width: 340px;
+        margin: 60px auto 20px;
+      }
+
+      /* Styles for the card title */
+      .card-title {
+        font-family: "Noto Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: left;
+        margin-bottom: 8px;
+        color: #404040;
+      }
+
+      /* Styles for the textarea within the card */
+      .card textarea {
+        width: 100%;
+        height: 100px;
+        resize: vertical;
+        padding: 8px;
+        margin-bottom: 4px;
+        font-size: 14px;
+        background: #fafafa;
+        border: 1px solid #e6e6e6;
+        border-radius: 8px;
+        resize: none;
+      }
+
+      /* Styles for the textarea placeholder */
+      .card textarea::placeholder {
+        color: #737373;
+      }
+
+      /* Styles for the character count display */
+      .card-counter + .char-count {
+        text-align: right;
+        color: #737373;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+      }
+
+      /* Styles for the textarea focus state */
+      textarea:focus {
+        box-shadow: #404040 0px 0px 0px 4px;
+      }
+
+      /* Hide elements with aria-hidden="true" */
+      [aria-hidden="true"] {
+        display: none;
+      }
+
+      /* Styles for the required field message */
+      #description-required {
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 400;
+        font-size: 14px;
+        color: #dc2626;
+        padding-bottom: 20px;
+        
+      }
+
+      /* Hide the second character count element */
+      .card2 .char-count{
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main content of the page -->
+    <div class="main_card">
+      <!-- First card -->
+      <div class="card">
+        <h3 class="card-title">
+          <label for="description-field">Description</label>
+        </h3>
+        <textarea
+          id="description-field"
+          class="card-counter"
+          placeholder="Write your message..."
+          aria-describedby="description-error"
+          onkeypress="return textOnly(event)"
+        ></textarea>
+        <div id="description-error" aria-hidden="true">
+          Vkladajte prosím len text.
+        </div>
+      </div>
+
+      <!-- Second card with validation -->
+      <div class="card card2">
+        <h3 class="card-title">
+          <label for="description-field">Description</label>
+        </h3>
+        <textarea
+          id="description-field"
+          class="card-counter"
+          placeholder="Enter a description"
+          aria-describedby="description-error description-required"
+          onkeyup="validateDescription(this)"
+          onblur="validateDescription(this)"
+          onkeypress="return textOnly(event)"
+        ></textarea>
+        <div id="description-error" aria-hidden="true">
+          Vkladajte prosím len text.
+        </div>
+        <div id="description-required" class="error-message">
+          This field is required
+        </div>
+      </div>
+
+      <!-- Third card -->
+      <div class="card">
+        <h3 class="card-title">
+          <label for="description-field">Description</label> </h3>
+          <textarea
+            id="description-field"
+            class="card-counter"
+            placeholder="Write your message..."
+            aria-describedby="description-error"
+            onkeypress="return textOnly(event)"
+          ></textarea>
+                <div id="description-error" aria-hidden="true">
+          Vkladajte prosím len text.
+        </div>
+      </div>
+    </div>
+
+    <!-- External JavaScript file -->
+    <script src="js/index.js"></script>
+
+    <!-- Inline JavaScript -->
+    <script>
+      // Event listener for when the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        const MAX_CHARS = 500;
+        const cardCounters = document.querySelectorAll(".card-counter");
+
+        // Function to update character count
+        function updateCharCount(element) {
+          const text = element.value || element.innerText;
+          const charCount = text.length;
+
+          let counter = element.nextElementSibling;
+          if (!counter || !counter.classList.contains("char-count")) {
+            counter = document.createElement("div");
+            counter.classList.add("char-count");
+            element.parentNode.insertBefore(counter, element.nextSibling);
+          }
+
+          if (charCount <= MAX_CHARS) {
+            counter.textContent = `${charCount}/${MAX_CHARS}`;
+            counter.style.color = ""; // Reset color
+          } else {
+            counter.textContent = `Character capacity exceeded (${charCount}/${MAX_CHARS})`;
+            counter.style.color = "red"; // Change color to red for emphasis
+          }
+        }
+
+        // Add event listeners to all card counters
+        cardCounters.forEach(function (element) {
+          updateCharCount(element); // Initial count
+
+          if (element.tagName === "TEXTAREA" || element.tagName === "INPUT") {
+            element.addEventListener("input", function () {
+              updateCharCount(element);
+            });
+          }
+        });
+      });
+
+      // Function to allow only text input
+      function textOnly(e) {
+        var char = String.fromCharCode(e.which);
+        if (/^[a-zA-Z\s]$/.test(char)) return true;
+        else e.preventDefault();
+      }
+
+      // Function to handle paste events
+      function handlePaste(e) {
+        var clipboardData = e.clipboardData || window.clipboardData;
+        var pastedData = clipboardData.getData("Text");
+
+        if (!/^[a-zA-Z\s]*$/.test(pastedData)) {
+          e.preventDefault();
+          return false;
+        }
+        return true;
+      }
+      // Function to validate description field
+      function validateDescription(textarea) {
+    const card = textarea.closest(".card");
+    const requiredMessage = card.querySelector("#description-required");
+    const charCountDivs = card.querySelectorAll(".char-count");
+
+    if (textarea.value.trim().length === 0) {
+        requiredMessage.style.display = "block";
+        charCountDivs.forEach((div) => (div.style.display = "none"));
+    } else {
+        requiredMessage.style.display = "none";
+        charCountDivs.forEach((div) => (div.style.display = "block"));
+    }
+
+    
+}
+
+      // Function to initialize validation for all description textareas
+      function initializeValidation() {
+        const textareas = document.querySelectorAll(
+          'textarea[name="description"]'
+        );
+        textareas.forEach((textarea) => {
+          validateDescription(textarea);
+          textarea.addEventListener("input", function () {
+            validateDescription(this);
+          });
+        });
+      }
+
+      // Run initialization when DOM is fully loaded
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initializeValidation);
+      } else {
+        initializeValidation();
+      }
+    </script>
+  </body>
+</html>
