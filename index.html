@@ -44,8 +44,9 @@
         border: 1px solid #e6e6e6;
         border-radius: 8px;
         resize: none;
+      
       }
-
+    
       /* Styles for the textarea placeholder */
       .card textarea::placeholder {
         color: #737373;
@@ -60,12 +61,7 @@
         font-weight: 400;
       }
 
-      /* Styles for the textarea focus state */
-      textarea:focus {
-        box-shadow: #404040 0px 0px 0px 4px;
-      }
-
-      /* Hide elements with aria-hidden="true" */
+          /* Hide elements with aria-hidden="true" */
       [aria-hidden="true"] {
         display: none;
       }
@@ -79,11 +75,15 @@
         padding-bottom: 20px;
         
       }
+      .error-border {
+       border: 1px solid red !important;
+}
 
       /* Hide the second character count element */
       .card2 .char-count{
         display: none;
       }
+      
     </style>
   </head>
   <body>
@@ -113,7 +113,7 @@
         </h3>
         <textarea
           id="description-field"
-          class="card-counter"
+          class="card-counter error-border"
           placeholder="Enter a description"
           aria-describedby="description-error description-required"
           onkeyup="validateDescription(this)"
@@ -214,9 +214,11 @@
 
     if (textarea.value.trim().length === 0) {
         requiredMessage.style.display = "block";
+        document.querySelectorAll(".card2 textarea").forEach(textarea => textarea.classList.add("error-border"));
         charCountDivs.forEach((div) => (div.style.display = "none"));
     } else {
         requiredMessage.style.display = "none";
+        document.querySelectorAll(".card2 textarea").forEach(textarea => textarea.classList.remove("error-border"));
         charCountDivs.forEach((div) => (div.style.display = "block"));
     }
 
